@@ -1,0 +1,24 @@
+{
+  "name": "sa-backend",
+  "version": "1.0.0",
+  "description": "backedn for sa-lab project",
+  "main": "build/index.js",
+  "private": true,
+  "scripts": {
+    "start": "NODE_PATH=./build node build/index.js",
+    "build": "tsc -p .",
+    "dev": "nodemon src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^3.19.1"
+  },
+  "devDependencies": {
+    "@types/node": "^16.3.3",
+    "nodemon": "^2.0.12",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
+  }
+}

@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  ts-node-backend:
+    build:
+      context: './backend'
+      target: base
+    volumes:
+      - ./backend/:/home/node/app
+    container_name: ts-node-backend
+    expose:
+      - '3001'
+    ports:
+      - '3001:3001'
+    command: npm run dev
