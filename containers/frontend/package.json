@@ -1,7 +1,7 @@
 {
   "name": "sa-lab",
   "version": "1.0.0",
-  "description": "React boilerplate",
+  "description": "React typescript",
   "main": "index.js",
   "scripts": {
     "start": "webpack serve --port 3000",
