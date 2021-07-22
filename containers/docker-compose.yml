@@ -5,10 +5,23 @@ services:
       context: './backend'
       target: base
     volumes:
-      - ./backend/:/home/node/app
+      - ./backend/:/home/backend/
     container_name: ts-node-backend
     expose:
       - '3001'
     ports:
       - '3001:3001'
     command: npm run dev
+  ts-react-frontend:
+    build:
+      context: './frontend'
+      target: base
+    stdin_open: true
+    volumes:
+      - ./frontend/:/home/frontend/
+    container_name: ts-react-frontend
+    expose:
+      - '3000'
+    ports:
+      - '3000:3000'
+    command: npm start
