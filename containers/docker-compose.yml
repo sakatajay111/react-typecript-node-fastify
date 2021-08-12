@@ -3,25 +3,43 @@ services:
   ts-node-backend:
     build:
       context: './backend'
-      target: base
-    volumes:
-      - ./backend/:/home/backend/
+      target: backend-dev
     container_name: ts-node-backend
+    image: app:backend-dev
     expose:
       - '3001'
     ports:
       - '3001:3001'
+    # NOTE: the container path must match APP_SOURCE above
+    # NOTE: node_modules must be added here so container uses modules from its own volume
+    volumes:
+      - ./backend/:/opt/backend:rw
+      - /opt/backend/node_modules
+
+    entrypoint:
+      - dumb-init
+      - -- 
     command: npm run dev
+    networks:
+      - app-network
   ts-react-frontend:
     build:
       context: './frontend'
-      target: base
+      target: frontend-dev
     stdin_open: true
     volumes:
-      - ./frontend/:/home/frontend/
+      - ./frontend/:/opt/frontend:rw
+      - /opt/frontend/node_modules
     container_name: ts-react-frontend
+    image: app:frontend-dev
     expose:
       - '3000'
     ports:
       - '3000:3000'
     command: npm start
+    networks:
+      - app-network
+  # networking specifics
+networks:
+  app-network:
+    driver: bridge

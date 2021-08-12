@@ -1,16 +1,48 @@
-FROM node:14 as base
+# start with Alpine Linux Node image for development
+FROM node:14.16.0-alpine as backend-dev
 
-WORKDIR /home/backend
+ARG APP_PATH="/opt/backend"
+ARG NODE_ENV="development"
+ARG PORT="3001"
 
-COPY package*.json ./
+# set environment variables
+ENV NODE_ENV="${NODE_ENV}" \
+    PORT="${PORT}"
 
-RUN npm i
+# Project code
+COPY . ${APP_PATH}/
 
-EXPOSE 3001
-COPY . .
+# change to workspace and run project install script
+WORKDIR ${APP_PATH}
+RUN apk add --update --no-cache bash-completion && \
+    bash ./bin/install
 
-FROM base as production
+# expose standard Node.js port of 3000
+EXPOSE ${PORT}
 
-ENV NODE_PATH=./build
+# use Alpine Linux Node image for production
+FROM node:14.16.0-alpine as backend-production
 
-RUN npm run build
+ARG APP_PATH="/opt/backend"
+ARG NODE_ENV="production"
+ARG PORT="3001"
+
+# set environment variables
+ENV NODE_ENV="${NODE_ENV}" \
+    PORT="${PORT}"
+
+# Project code
+COPY --from=backend-dev ${APP_PATH}/build ${APP_PATH}/build/
+COPY bin ${APP_PATH}/bin/
+COPY package.json package-lock.json ${APP_PATH}/
+
+# change to workspace and run project install script
+WORKDIR ${APP_PATH}
+RUN apk add --update --no-cache bash-completion && \
+    bash ./bin/install
+
+# expose standard Node.js port of 3000
+EXPOSE ${PORT}
+
+# NOTE: change CMD to be command to start node app
+ENTRYPOINT ["dumb-init", "--"]
